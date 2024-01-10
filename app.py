@@ -51,7 +51,7 @@ st.image("img/franja_inferior_1.png")
 st.write("")
 
 # Estableciendo el logo de Carozzi
-st.image("img/logo_mono.png", width=350)
+st.image("img/logo_mono.png", width=300)
 
 st.markdown("""
     <style>
@@ -59,11 +59,11 @@ st.markdown("""
         font-size:18px !important;
     }
     </style>
-    <p class="small-font">¡Hola!, soy el Mono de Carozzi 🐵. Te daré algunos consejos de cómo puedes reciclar tu producto y el impacto positivo que tiene, sólo toma una fotografía del producto que estas consumiendo y listo.</p>
+    <p class="small-font">¡Hola!, soy el Mono de Carozzi 🐵. Te daré algunos consejos de cómo puedes reciclar tu producto y te explicaré el impacto positivo que tiene, sólo toma una fotografía del producto que estás consumiendo y listo.</p>
     """, unsafe_allow_html=True)
 
 # Imagen de cabecera
-st.image('img/mono.png', width=400)
+st.image('img/mono.png', width=300)
 
 # Carga de imagen por el usuario
 uploaded_file = st.file_uploader("Carga una imagen del producto que deseas reciclar", type=["jpg", "png", "jpeg"])
@@ -120,6 +120,7 @@ if st.button("Analizar Producto") and uploaded_file is not None:
             Dado el siguiente producto y material identificado:
             {identification}
             Proporcione información sobre el tiempo de biodegradación del material y el impacto positivo de reciclar este material.
+            Explica también el impacto en la huella de carbono positivo al reciclar este material
             
             Debes responder como si fueras el Mono, que es un personaje de Carozzi que está impulsando temas de reciclaje, no es necesario que saludes debido a que ya lo hará en las fases
             Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente
