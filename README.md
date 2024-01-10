@@ -1,32 +1,32 @@
-# ProductGPT
+# Aplicación de Análisis Ecológico con Streamlit
 
-ProductGPT es una aplicación que te ayuda a generar descripciones promocionales para tus productos. Con un enfoque en la descripción de productos mediante imágenes y texto, la aplicación utiliza IA para proporcionar descripciones detalladas y nombres atractivos para los productos cargados.
+## Descripción
+Esta aplicación utiliza Streamlit y la inteligencia artificial de OpenAI para identificar productos a través de imágenes y proporcionar información ecológica sobre ellos. 
 
-## Funcionamiento
+## Requerimientos
+- Python 3.7 o superior
+- Bibliotecas Python: `streamlit`, `base64`, `langchain`, `dotenv`, `openai`
 
-La aplicación consta de los siguientes elementos:
+## Cómo Ejecutar la Aplicación
+1. Clona este repositorio.
+2. Instala las dependencias con `pip install -r requirements.txt`.
+3. Ejecuta la aplicación con `streamlit run nombre_del_archivo.py`.
 
-- **Interfaz de Usuario**: 
-    - Permite al usuario cargar una imagen del producto.
-    - Proporciona un espacio para introducir características adicionales del producto, como precio, marca, etc.
-    - Botón "Enviar Consulta" para iniciar el procesamiento.
-
-- **Procesamiento de IA**:
-    - Analiza la imagen y el texto proporcionados por el usuario utilizando modelos de IA.
-    - Genera descripciones detalladas y nombres atractivos para el producto basados en los datos de entrada.
-
-- **Descarga de Resultados**:
-    - Presenta una descripción promocional para el producto generado por la IA.
-    - Ofrece la opción de descargar la descripción con un nombre de archivo específico basado en el nombre sugerido para el producto.
+## Funcionalidades
+- **Identificación de Producto y Material:** Permite cargar imágenes de productos para identificarlos y obtener consejos de reciclaje.
+- **Impacto Ecológico del Material:** Proporciona información sobre el tiempo de biodegradación y el impacto positivo de reciclar el material.
 
 ## Uso
+1. La aplicación muestra un mensaje de bienvenida y la imagen del logo de Carozzi.
+2. El usuario puede cargar una imagen del producto que desea reciclar.
+3. Al presionar el botón "Analizar Producto", la aplicación utiliza inteligencia artificial para identificar el producto y material.
+4. Proporciona consejos de reciclaje y detalles sobre el impacto ecológico del material identificado.
+5. Se puede descargar la información generada con el botón "Descargar Información".
 
-Para utilizar esta aplicación:
+## Referencias
+- [Streamlit](https://streamlit.io/)
+- [OpenAI](https://openai.com/)
+- [Carozzi](https://www.carozzi.cl/)
 
-1. Carga una imagen de tu producto.
-2. Añade características adicionales como el precio, marca, etc.
-3. Haz clic en "Enviar Consulta" para obtener una descripción promocional y un nombre para tu producto.
-4. Descarga la descripción proporcionada con el botón de descarga correspondiente.
-
-## Autor
+## Creador:
 @NicoIG
