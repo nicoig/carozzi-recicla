@@ -4,7 +4,7 @@
 # Primera Carga a Github
 # git init
 # git add .
-# git remote add origin https://github.com/nicoig/ProductGPT.git
+# git remote add origin https://github.com/nicoig/carozzi-recicla.git
 # git commit -m "Initial commit"
 # git push -u origin master
 
@@ -17,7 +17,7 @@
 # agregar en variables de entorno
 # PYTHON_VERSION = 3.9.12
 
-# git remote set-url origin https://github.com/nicoig/ProductGPT.git
+# git remote set-url origin https://github.com/nicoig/carozzi-recicla.git
 # git remote -v
 # git push -u origin main
 
@@ -34,7 +34,6 @@ from dotenv import load_dotenv, find_dotenv
 from openai import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
-from io import BytesIO
 
 # Cargar las variables de entorno para las claves API
 load_dotenv(find_dotenv())
@@ -44,7 +43,15 @@ def encode_image(image_file):
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 # Configura el título y subtítulo de la aplicación en Streamlit
-st.title("ProductGPT")
+
+# Estableciendo la franja superior
+st.image("img/franja_inferior_1.png")
+
+# Agregar un espacio o salto
+st.write("")
+
+# Estableciendo el logo de Carozzi
+st.image("img/logo_mono.png", width=350)
 
 st.markdown("""
     <style>
@@ -52,86 +59,91 @@ st.markdown("""
         font-size:18px !important;
     }
     </style>
-    <p class="small-font">Te ayudaré con la descripción ideal para que promociones tu producto, sólo carga tu la imágen de tu producto, añade características adicionales como contexto y listo</p>
+    <p class="small-font">¡Hola!, soy el Mono de Carozzi 🐵. Te daré algunos consejos de cómo puedes reciclar tu producto y el impacto positivo que tiene, sólo toma una fotografía del producto que estas consumiendo y listo.</p>
     """, unsafe_allow_html=True)
-# Imagen
-st.image('img/robot.png', width=250)
 
-# Inicializar la variable descripcion_producto
-descripcion_producto = ""
+# Imagen de cabecera
+st.image('img/mono.png', width=400)
 
+# Carga de imagen por el usuario
+uploaded_file = st.file_uploader("Carga una imagen del producto que deseas reciclar", type=["jpg", "png", "jpeg"])
 
-# Carga de imagen y texto por el usuario
-uploaded_file = st.file_uploader("Carga una imagen de tu producto", type=["jpg", "png", "jpeg"])
-input_text = st.text_input("Añade características adicionales como el Precio, Marca, etc")
+# Restablecer el contenido generado al cargar una nueva imagen
+if 'last_uploaded_file' not in st.session_state or (uploaded_file is not None and uploaded_file != st.session_state['last_uploaded_file']):
+    st.session_state['last_uploaded_file'] = uploaded_file
+    st.session_state['generated_content'] = False
 
 # Botón de enviar y proceso principal
-if st.button("Enviar Consulta") and uploaded_file is not None and input_text:
-    with st.spinner('Analizando tu consulta...'):
+if st.button("Analizar Producto") and uploaded_file is not None:
+    with st.spinner('Identificando el producto y material...'):
         image = encode_image(uploaded_file)
+        st.session_state['generated_content'] = True
 
-        # Analizar la imagen y el texto con la IA
+        # Identificar el producto y el material con la IA
         chain = ChatOpenAI(model="gpt-4-vision-preview", max_tokens=1024)
         msg = chain.invoke(
-            [AIMessage(content="Por favor, realice un análisis detallado de la imagen proporcionada junto con la descripción del texto. Identifique elementos clave tales como el producto, la marca, el color, y otros detalles relevantes que puedan ser discernidos. Proporcione una descripción pormenorizada de todos los aspectos de la imagen que pueda evaluar, incluyendo posibles usos o el público objetivo del producto si esto pudiera ser inferido."),
-             HumanMessage(content=[{"type": "text", "text": input_text},
-                                   {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}"}}])
+            [AIMessage(content="Basándose en la imagen, identifique el producto y el tipo de material."),
+             HumanMessage(content=[{"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}"}}])
             ]
         )
 
-        producto = msg.content
-        #st.markdown("**Información general del producto:**")
-        #st.write(diagnostico)
+        st.session_state['identificacion'] = msg.content
+        #st.markdown("**Identificación del producto y material:**")
+        #st.write(st.session_state['identificacion'])
 
-        # Generar recomendaciones de tratamiento
-        chain = ChatOpenAI(model="gpt-3.5-turbo", max_tokens=1024)
-        prompt_producto = PromptTemplate.from_template(
+        # Generar recomendaciones de reciclaje
+        prompt_reciclaje = PromptTemplate.from_template(
             """
-            Dada la siguiente descripción de producto: "{product_vision}", se solicita crear un copy promocional atractivo y convincente. El copy debe ser breve, ingenioso y diseñado para captar la atención y despertar interés en redes sociales, debe ser completo e incluir las características más relevantes en párrafos.
-
-            Por favor, sigue estas directrices:
-            - Usa un lenguaje claro, directo y amigable.
-            - Incluye al menos dos llamados a la acción.
-            - Emplea emojis de manera efectiva para realzar el mensaje.
-            - Asegúrate de que el tono sea optimista y empoderador.
+            Dado el siguiente producto y material identificado:
+            {identification}
+            ¿Qué consejos de reciclaje se pueden dar para este producto?
+            Debes responder como si fueras el Mono, que es un personaje de la empresa Carozzi, está impulsando temas de reciclaje,
+            También ten en contexto que Carozzi en sus oficinas tiene lugares para reciclar con colores por material:
+            - Plásticos PET (Color Amarillo): Botellas plásticas, bandejas de galletas.
+            - Aluminio (Color Plomo): Latas y envoltorios de aluminio 
+            - Papel y Cartón (Color Azul): Todo tipo de papeles, cartulinas y cartón.
+            - Envases Plásticos PP (Color Amarillo): Envoltorios de plástico flexible como galletas, pastas, barritas de cereal, etc.
+            
+            La idea es que respondas como si fueras el Mono, aparte de aconsejar como reciclar, también aconseja en donde debemos reciclar según el contexto entregado de los botes por tipo de material y su color
+            Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente
             Output:
             """
         )
-        runnable = prompt_producto | chain | StrOutputParser()
-        descripcion_producto = runnable.invoke({"product_vision": producto})
-        st.markdown("**Descripción promocional para tu producto:**")
-        st.write(descripcion_producto)
+        runnable = prompt_reciclaje | chain | StrOutputParser()
+        st.session_state['consejos_reciclaje'] = runnable.invoke({"identification": st.session_state['identificacion']})
+        st.markdown("**Consejos para reciclar este producto:**")
+        st.write(st.session_state['consejos_reciclaje'])
         
-        
-        prompt_nombre_producto = PromptTemplate.from_template(
+        # Generar información sobre el impacto ecológico
+        prompt_impacto_ecologico = PromptTemplate.from_template(
             """
-            Dada la siguiente descripción de producto: "{product_vision}", se solicita establecer un nombre corto al producto, que describa en una o dos palabras,
-            por ejemplo: botella_agua_negra
+            Dado el siguiente producto y material identificado:
+            {identification}
+            Proporcione información sobre el tiempo de biodegradación del material y el impacto positivo de reciclar este material.
+            
+            Debes responder como si fueras el Mono, que es un personaje de Carozzi que está impulsando temas de reciclaje, no es necesario que saludes debido a que ya lo hará en las fases
+            Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente
             Output:
             """
         )
-        runnable = prompt_nombre_producto | chain | StrOutputParser()
-        nombre_producto = runnable.invoke({"product_vision": producto})
-        #st.markdown("**Descripción promocional para tu producto:**")
-        #st.write(nombre_producto)
-        
+        runnable = prompt_impacto_ecologico | chain | StrOutputParser()
+        st.session_state['impacto_ecologico'] = runnable.invoke({"identification": st.session_state['identificacion']})
+        st.markdown("**Impacto Ecológico del Material:**")
+        st.write(st.session_state['impacto_ecologico'])
 
+# Función para compilar la información en un string
+def compile_information():
+    info = ""
+    if st.session_state.get('generated_content', False):
+        info += "Identificación del producto y material:\n" + st.session_state.get('identificacion', '') + "\n\n"
+        info += "Consejos para reciclar este producto:\n" + st.session_state.get('consejos_reciclaje', '') + "\n\n"
+        info += "Impacto Ecológico del Material:\n" + st.session_state.get('impacto_ecologico', '') + "\n\n"
+    return info
 
-# Descarga de información al final del código
-if descripcion_producto and nombre_producto:
-    nombre_producto_str = nombre_producto.strip().replace(" ", "_")  # Asegura que el nombre no tenga espacios
-    # Convertir la descripción a un archivo descargable
-    output_data = descripcion_producto.encode("utf-8")
-    b64 = base64.b64encode(output_data).decode()
-    button_label = 'Descargar Descripción'
-
-    # Generar el botón de descarga con el nombre del producto en el archivo
-    st.download_button(
-        label=button_label,
-        data=output_data,
-        file_name=f'descripcion_{nombre_producto_str}.txt',
-        mime='text/plain'
-    )  
-
-
-# Nota: Asegúrate de tener configuradas tus claves API y cualquier otro ajuste específico necesario para tu entorno y APIs.
+# Botón para descargar la información
+if st.session_state.get('generated_content', False):
+    info_to_download = compile_information()
+    st.download_button(label="Descargar Información", data=info_to_download, file_name="ecoGPT_info.txt", mime="text/plain")
+    
+# Estableciendo la franja superior
+st.image("img/franja_inferior_1.png")
