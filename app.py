@@ -34,6 +34,11 @@ from dotenv import load_dotenv, find_dotenv
 from openai import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema import StrOutputParser
+import streamlit as st
+import requests
+import os
+from dotenv import load_dotenv
+from io import BytesIO
 
 # Cargar las variables de entorno para las claves API
 load_dotenv(find_dotenv())
@@ -103,6 +108,7 @@ if st.button("Analizar Producto") and uploaded_file is not None:
             - Aluminio (Color Plomo): Latas y envoltorios de aluminio 
             - Papel y Cartón (Color Azul): Todo tipo de papeles, cartulinas y cartón.
             - Envases Plásticos PP (Color Amarillo): Envoltorios de plástico flexible como galletas, pastas, barritas de cereal, etc.
+            - Otros (Color Negro): Frutas, bolsas de té, envolturas de dulces, yogurt, tetrapack, etc.
             
             La idea es que respondas como si fueras el Mono, aparte de aconsejar como reciclar, también aconseja en donde debemos reciclar según el contexto entregado de los botes por tipo de material y su color
             Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente
@@ -115,6 +121,8 @@ if st.button("Analizar Producto") and uploaded_file is not None:
             "Hey muchacho, hoy me puedes prestar tu pelota, perfecto! compartir es la escencia de la vida, compartir es el amor, compartir es estar en familia" una frase media filosofica de vez en cuando .add()
             
             al final de la respuesta debes decir: "Y recuerden chicos, estaré vigilando que reciclen bien, sobre todo a Moraga"
+            
+            La repuesta debe ser precisa, en un parrafo de 80 palabras máximo. Recuerda que en el caso de ser necesario, debes aconsejar a como reciclarlo.
             Output:
             """
         )
@@ -134,7 +142,7 @@ if st.button("Analizar Producto") and uploaded_file is not None:
             Debes responder como si fueras el Mono, que es un personaje de Carozzi que está impulsando temas de reciclaje, no es necesario que saludes debido a que ya lo hará en las fases
             Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente.add()
             
-            La respuesta debe ser precisa y concisa, trata de no extenderte a lo más 2 o 3 lineas.
+            La repuesta debe ser precisa, en un parrafo de 80 palabras máximo
             Output:
             """
         )
@@ -142,6 +150,8 @@ if st.button("Analizar Producto") and uploaded_file is not None:
         st.session_state['impacto_ecologico'] = runnable.invoke({"identification": st.session_state['identificacion']})
         st.markdown("**Impacto Ecológico del Material:**")
         st.write(st.session_state['impacto_ecologico'])
+        
+        
         
         
 
@@ -154,10 +164,71 @@ def compile_information():
         info += "Impacto Ecológico del Material:\n" + st.session_state.get('impacto_ecologico', '') + "\n\n"
     return info
 
+
+# Carga las variables de entorno desde el archivo .env
+load_dotenv()
+
+# Función para text-to-speech utilizando ElevenLabs API
+def generate_audio_from_text(text):
+    XI_API_KEY = os.getenv('XI_API_KEY')
+    if not XI_API_KEY:
+        st.error("XI_API_KEY no está definida en las variables de entorno.")
+        return None
+
+    CHUNK_SIZE = 1024
+    url = "https://api.elevenlabs.io/v1/text-to-speech/eolrIrYW76wwfCBK3QGf"
+
+    headers = {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": XI_API_KEY
+    }
+
+    data = {
+        "text": text,
+        "model_id": "eleven_multilingual_v2",
+        "voice_settings": {
+            "stability": 0.3,
+            "similarity_boost": 0.65
+        }
+    }
+
+    # Muestra spinner y mensaje de "Generando Audio..." mientras se ejecuta el bloque
+    with st.spinner('Generando Audio...'):
+        try:
+            response = requests.post(url, json=data, headers=headers, timeout=30)  # Añadimos un timeout por si acaso la API se demora
+            if response.status_code == 200:
+                # Convertir el contenido del audio a base64
+                base64_audio = base64.b64encode(response.content).decode('utf-8')
+                # Crear el HTML para el elemento audio con autoplay
+                audio_html = f'<audio controls autoplay><source src="data:audio/mpeg;base64,{base64_audio}" type="audio/mpeg"></audio>'
+                return audio_html
+            else:
+                st.error(f"Error en la solicitud de texto a voz: {response.status_code}")
+                return None
+        except requests.exceptions.Timeout:
+            st.error("La solicitud de audio ha excedido el tiempo de espera. Por favor, intenta de nuevo.")
+            return None
+
+
 # Botón para descargar la información
+# Botón para generar y reproducir audio
+# Botón para generar y reproducir audio
 if st.session_state.get('generated_content', False):
     info_to_download = compile_information()
     st.download_button(label="Descargar Información", data=info_to_download, file_name="ecoGPT_info.txt", mime="text/plain")
-    
+
+    # Agregar esta parte después de generar el texto para el audio
+    texto_para_audio = st.session_state['consejos_reciclaje']
+    if texto_para_audio:  # Verifica si hay texto para generar el audio
+        audio_html = generate_audio_from_text(texto_para_audio)
+        if audio_html:
+            # Muestra el reproductor de audio con autoreproducción en la página
+            st.markdown(audio_html, unsafe_allow_html=True)
+
+
 # Estableciendo la franja superior
 st.image("img/franja_inferior_1.png")
+
+
+
