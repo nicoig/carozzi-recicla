@@ -51,17 +51,25 @@ def encode_image(image_file):
 # Configuración de la página para utilizar todo el layout
 st.set_page_config(layout="centered")  # Puedes cambiar a "wide" si prefieres
 
-# CSS para ocultar la barra de menú y el pie de página de Streamlit
+
+# CSS para ocultar la barra de menú, el pie de página de Streamlit y ajustar el espacio superior
 hide_streamlit_style = """
             <style>
             /* Ocultar el menú Hamburguesa */
             #MainMenu {visibility: hidden;}
             /* Ocultar el pie de página de Streamlit */
             footer {visibility: hidden;}
-            /* Ocultar la barra de herramientas de Streamlit */
-            header {visibility: hidden;}
-            /* Quitar el espacio extra en la parte superior */
-            .css-1d391kg {padding-top: 0px;}
+            /* Ocultar la barra de herramientas de Streamlit y ajustar el espacio superior */
+            header {visibility: hidden; height: 0px; padding: 0px; margin: 0px;}
+            /* Quitar el espacio extra en la parte superior del contenedor principal */
+            .streamlit-container {
+                padding-top: 0px;
+                margin-top: 0px;
+            }
+            /* Es posible que también necesites ajustar el padding del primer elemento después del header */
+            .block-container {
+                padding-top: 0px;
+            }
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -69,7 +77,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Configura el título y subtítulo de la aplicación en Streamlit
 
 # Estableciendo la franja superior
-st.image("img/franja_inferior_1.png")
+st.image("img/franja_inferior_1.png", use_column_width=True)
 
 # Agregar un espacio o salto
 st.write("")
