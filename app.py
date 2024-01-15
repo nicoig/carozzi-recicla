@@ -51,12 +51,17 @@ def encode_image(image_file):
 # Configuración de la página para utilizar todo el layout
 st.set_page_config(layout="centered")  # Puedes cambiar a "wide" si prefieres
 
-# CSS para ocultar la barra superior de Streamlit
+# CSS para ocultar la barra de menú y el pie de página de Streamlit
 hide_streamlit_style = """
             <style>
+            /* Ocultar el menú Hamburguesa */
             #MainMenu {visibility: hidden;}
+            /* Ocultar el pie de página de Streamlit */
             footer {visibility: hidden;}
-            .css-1y0tads {padding-top: 0rem;} 
+            /* Ocultar la barra de herramientas de Streamlit */
+            header {visibility: hidden;}
+            /* Quitar el espacio extra en la parte superior */
+            .css-1d391kg {padding-top: 0px;}
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
