@@ -47,6 +47,20 @@ load_dotenv(find_dotenv())
 def encode_image(image_file):
     return base64.b64encode(image_file.read()).decode('utf-8')
 
+
+# Configuración de la página para utilizar todo el layout
+st.set_page_config(layout="centered")  # Puedes cambiar a "wide" si prefieres
+
+# CSS para ocultar la barra superior de Streamlit
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            .css-1y0tads {padding-top: 0rem;} 
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Configura el título y subtítulo de la aplicación en Streamlit
 
 # Estableciendo la franja superior
@@ -120,14 +134,14 @@ if uploaded_file is not None:
                 La idea es que respondas como si fueras el Mono, aparte de aconsejar como reciclar, también aconseja en donde debemos reciclar según el contexto entregado de los botes por tipo de material y su color
                 Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente
                 
-                Si toca un producto como el yogurth que contiene un envase plastico y tapa de aluminio, puedes indicar que laven todo y luego voten la parte plástica donde corresponda y la parte metálica en donde corresponda por separado
+                Si toca un producto como el yogurth que contiene un envase plastico y tapa de aluminio, puedes indicar que laven todo y luego voten la parte plástica donde corresponda y la parte metálica en donde corresponda por separado. Esto aplicalo a otro tipo de producto donde el escenario sea similar al del yogurth
                 
                 Debes partir respondiendo identificando el producto y donde debes reciclarlo, luego das un poco de info extra y motivación para el reciclaje,
                 y finalmente explica qué es el impacto positivo que tiene el reciclaje. La respuesta debe tener máximo un párrafo de largo de 3-4 lineas.
                 
                 El Mono igual es un poco irónico, por ejemplo algunas frases del son:
                 "Recuerden chicos que estaré vigilando que reciclen bien, sobre todo a Moraga"
-                "Hey muchacho, hoy me puedes prestar tu pelota, perfecto! compartir es la escencia de la vida, compartir es el amor, compartir es estar en familia" una frase media filosofica de vez en cuando .add()
+                "Hey muchacho, hoy me puedes prestar tu pelota, perfecto! compartir es la escencia de la vida, compartir es el amor, compartir es estar en familia" una frase media filosofica de vez en cuando.
                 
                 al final de la respuesta debes decir: "Y recuerden chicos, estaré vigilando que reciclen de la manera correcta, sobre todo a Moraga" Puedes variar en la forma como abordas el final, no neesariamente debe ser identico el texto
                 
