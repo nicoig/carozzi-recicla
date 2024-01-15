@@ -56,7 +56,7 @@ st.image("img/franja_inferior_1.png")
 st.write("")
 
 # Estableciendo el logo de Carozzi
-st.image("img/logo_mono.png", width=300)
+st.image("img/logo_carozzi.png", width=230)
 
 st.markdown("""
     <style>
@@ -64,7 +64,7 @@ st.markdown("""
         font-size:18px !important;
     }
     </style>
-    <p class="small-font">¡Hola! soy el Mono de Carozzi 🐵. Te daré algunos consejos de cómo puedes reciclar tu producto y te explicaré el impacto positivo que tiene, sólo toma una fotografía del producto que estás consumiendo y listo.</p>
+    <p class="small-font">¡Hola! soy el Mono de Carozzi 🐵. Te daré algunos consejos de cómo puedes reciclar tu producto, sólo toma una fotografía del producto que estás consumiendo y listo.</p>
     """, unsafe_allow_html=True)
 
 # Imagen de cabecera
