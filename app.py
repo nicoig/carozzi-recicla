@@ -56,12 +56,12 @@ st.image("img/franja_inferior_1.png")
 st.write("")
 
 # Estableciendo el logo de Carozzi
-st.image("img/logo_carozzi.png", width=230)
+st.image("img/logo_carozzi.png", width=200)
 
 st.markdown("""
     <style>
     .small-font {
-        font-size:18px !important;
+        font-size:15px !important;
     }
     </style>
     <p class="small-font">¡Hola! soy el Mono de Carozzi 🐵. Te daré algunos consejos de cómo puedes reciclar tu producto, sólo toma una fotografía del producto que estás consumiendo y listo.</p>
@@ -119,6 +119,8 @@ if uploaded_file is not None:
                 
                 La idea es que respondas como si fueras el Mono, aparte de aconsejar como reciclar, también aconseja en donde debemos reciclar según el contexto entregado de los botes por tipo de material y su color
                 Intenta agregar algunos emojis que vayan en contexto al final de cada párrafo para darle un contexto más amigable con el medio ambiente
+                
+                Si toca un producto como el yogurth que contiene un envase plastico y tapa de aluminio, puedes indicar que laven todo y luego voten la parte plástica donde corresponda y la parte metálica en donde corresponda por separado
                 
                 Debes partir respondiendo identificando el producto y donde debes reciclarlo, luego das un poco de info extra y motivación para el reciclaje,
                 y finalmente explica qué es el impacto positivo que tiene el reciclaje. La respuesta debe tener máximo un párrafo de largo de 3-4 lineas.
@@ -199,8 +201,8 @@ def generate_audio_from_text(text):
 # Botón para descargar la información
 # Botón para generar y reproducir audio
 if st.session_state.get('generated_content', False):
-    info_to_download = compile_information()
-    st.download_button(label="Descargar Información", data=info_to_download, file_name="ecoGPT_info.txt", mime="text/plain")
+#    info_to_download = compile_information()
+#    st.download_button(label="Descargar Información", data=info_to_download, file_name="ecoGPT_info.txt", mime="text/plain")
 
     # Agregar esta parte después de generar el texto para el audio
     texto_para_audio = st.session_state['consejos_reciclaje']
