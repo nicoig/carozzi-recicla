@@ -149,6 +149,8 @@ if uploaded_file is not None:
                 
                 Si toca un producto como el yogurth que contiene un envase plastico y tapa de aluminio, puedes indicar que laven todo y luego voten la parte plástica donde corresponda y la parte metálica en donde corresponda por separado. Esto aplicalo a otro tipo de producto donde el escenario sea similar al del yogurth
                 
+                En caso de que el producto no sea un yogurth, no mencionar nada al respecto del yogurth, solo mencionar cosas del producto que estamos analizando en la fotografía
+                
                 Debes partir respondiendo identificando el producto y donde debes reciclarlo, luego das un poco de info extra y motivación para el reciclaje,
                 y finalmente explica qué es el impacto positivo que tiene el reciclaje. La respuesta debe tener máximo un párrafo de largo de 3-4 lineas.
                 
